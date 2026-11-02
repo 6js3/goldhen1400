@@ -762,6 +762,7 @@ function clearPredecessor() {
 function loadHistoryCritical() {
   let result = null;
   let candidate = null;
+  let pickIdx = DUPLICATE_INDEX;
   let rwHeaderCaptured = false;
   let rwVectorTouched = false;
   try {
@@ -787,9 +788,20 @@ function loadHistoryCritical() {
       return;
     }
 
-    candidate = result[DUPLICATE_INDEX];
+let pA = -1;
+    let pB = -1;
+    try {
+      if (result[1] != null) pA = result[1][0];
+      if (result[DUPLICATE_INDEX] != null) pB = result[DUPLICATE_INDEX][0];
+    } catch (e) {}
+    if (typeof pA !== "number") pA = -1;
+    if (typeof pB !== "number") pB = -1;
+    if (pA === 0x3c && pB !== 0x3c) pickIdx = 1;
+    emit("CANDIDATE-PROBE", `idx1=${pA}-idx2=${pB}-pick=${pickIdx}`);
+
+    candidate = result[pickIdx];
     candidateEverReturned = true;
-    result[DUPLICATE_INDEX] = undefined;
+    result[pickIdx] = undefined;
     result = null;
 
     readBytes(rwHeader, candidate, CELL_BYTES);
@@ -1046,11 +1058,7 @@ function loadHistoryCritical() {
       result === null &&
       !rwHeaderCaptured &&
       error?.name === "TypeError";
-    if (result !== null) {
-      try {
-        result[DUPLICATE_INDEX] = undefined;
-      } catch {}
-    }
+result[pickIdx] = undefined;
     if (candidate !== null && rwHeaderCaptured && rwVectorTouched) {
       try {
         restoreCarrier(candidate);
