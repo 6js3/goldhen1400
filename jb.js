@@ -1,4 +1,4 @@
-import { establishPrimitive } from "./core.js?v=26";
+import { establishPrimitive } from "./core.js?v=27";
 import { installWindowP, pairStatus } from "./mem.js?v=25";
 import { int64 } from "./int64.js?v=25";
 import { offsetsFor } from "./ps4_offsets.js?v=25";
@@ -315,7 +315,7 @@ let allDone = false,
     state("running the primitive...", "warn");
     await new Promise((r) => setTimeout(r, 0));
 
-    const PRIMITIVE_LOUD = /FAIL|ERROR|THREW|RETRY|ABORT|PASS/i;
+  const PRIMITIVE_LOUD = /FAIL|ERROR|THREW|RETRY|ABORT|PASS|MISS/i;
     const carrier = await establishPrimitive({
       maxAttempts: 6,
       onEvent: (t, d, a) =>
