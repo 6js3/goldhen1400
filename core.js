@@ -17,9 +17,9 @@ const CARRIER_SLOTS = (function () {
   try {
     const q = new URLSearchParams(location.search).get("slots");
     const n = q ? parseInt(q, 10) : 0;
-    if (n >= 100000 && n <= 40000000) return n;
+    if (Number.isInteger(n) && n >= 100000 && n <= 40000000) return n;
   } catch (e) {}
-  return CARRIER_SLOTS = 4000000;
+  return 4000000;
 })();
 
 const CARRIER_BYTES = CARRIER_SLOTS * 8;
@@ -163,6 +163,7 @@ const profile = {
   carrierFlags: UNSEEN,
   carrierMode: UNSEEN,
   carrierByte28: UNSEEN,
+  carrierByte20: UNSEEN,
   holderSID: UNSEEN,
   holderType: UNSEEN,
   holderFlags: UNSEEN,
@@ -186,6 +187,7 @@ function resetProfile() {
   profile.carrierFlags = UNSEEN;
   profile.carrierMode = UNSEEN;
   profile.carrierByte28 = UNSEEN;
+  profile.carrierByte20 = UNSEEN;
   profile.holderSID = UNSEEN;
   profile.holderType = UNSEEN;
   profile.holderFlags = UNSEEN;
