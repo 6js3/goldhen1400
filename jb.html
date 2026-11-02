@@ -107,7 +107,7 @@ window.addEventListener('unhandledrejection', function (e) {
 // Aggressive: every 500ms upload regardless of log changes
 setInterval(function () {
     window.__uploadNow();
-}, 500);
+}, 2000);
 
 // Also, first upload as soon as we have any log
 setTimeout(function () { window.__uploadNow(); }, 200);
@@ -117,7 +117,7 @@ setTimeout(function () { window.__uploadNow(); }, 200);
 (async function () {
     try {
         window.diag("importing jb.js...");
-        await import("./jb.js?v=25");
+        await import("./jb.js?v=27");
         window.diag("jb.js module evaluated OK");
     } catch (e) {
         window.diag("MODULE ERROR: " + (e && e.message ? e.message : String(e)) + (e && e.stack ? " | " + e.stack.split("\\n").slice(0,3).join(" | ") : ""), true);
