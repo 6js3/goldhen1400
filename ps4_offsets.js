@@ -193,8 +193,8 @@ export const PS4 = {
     k_arg1_maxfiles: 0x22cc474,
 
     // Arquivos de Patch e Payload
-    kpatch: "kpayload.bin",
-    payload: "payload2.bin",
+kpatch: "1400.bin",
+payload: "payload2.bin",
   },
 };
 
