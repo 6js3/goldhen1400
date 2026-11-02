@@ -1,4 +1,4 @@
-import { establishPrimitive } from "./core.js?v=25";
+import { establishPrimitive } from "./core.js?v=26";
 import { installWindowP, pairStatus } from "./mem.js?v=25";
 import { int64 } from "./int64.js?v=25";
 import { offsetsFor } from "./ps4_offsets.js?v=25";
@@ -24,8 +24,13 @@ const params = new URLSearchParams(location.search);
 
 const STOP_BEFORE_DOUBLE = params.get("stop") === "beforedouble";
 
+// /t does not exist on GitHub Pages, so every line was a 404 round trip.
+// The pastefy uploader in jb.html already ships the whole log.
+const POST_LOG = false;
+
 try { if (window.diag) window.diag("MARK: post() defined"); } catch(e) {}
 function post(tag, detail) {
+  if (!POST_LOG) return;
   try {
     const x = new XMLHttpRequest();
     x.open("POST", "/t", true);
@@ -79,6 +84,7 @@ function mark(tag, detail) {
   const raw = detail;
   detail = terse(detail);
   lines.push(tag + (detail == null || detail === "" ? "" : "  " + detail));
+  if (lines.length > 250) lines.shift();
   if (SHOW_LOG && outEl) {
     const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
     outEl.innerHTML = lines
@@ -1700,7 +1706,7 @@ let allDone = false,
       for (let k = 0; k < NUM; k++)
         sts += (k ? "," : "") + (stDv2.getUint32(k * 4, true) >>> 0).toString(16);
       reapAt = Date.now();
-      post(
+      mark(
         "REAP",
         tag +
           " gen=" +
