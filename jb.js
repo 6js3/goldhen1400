@@ -316,14 +316,21 @@ let allDone = false,
     await new Promise((r) => setTimeout(r, 0));
 
   const PRIMITIVE_LOUD = /FAIL|ERROR|THREW|RETRY|ABORT|PASS|MISS/i;
-    const carrier = await establishPrimitive({
-      maxAttempts: 6,
-      onEvent: (t, d, a) =>
-        (PRIMITIVE_LOUD.test(t) ? mark : trace)(
-          t,
-          (a != null ? "[" + a + "] " : "") + (d || ""),
-        ),
-    });
+let carrier = null;
+    try {
+      carrier = await establishPrimitive({
+        maxAttempts: 6,
+        onEvent: (t, d, a) =>
+          (PRIMITIVE_LOUD.test(t) ? mark : trace)(
+            t,
+            (a != null ? "[" + a + "] " : "") + (d || ""),
+          ),
+      });
+    } catch (ePrim) {
+      mark("PRIMITIVE-GAVE-UP", (ePrim && ePrim.message) || String(ePrim));
+      if (retryBenign("primitive-failed")) return;
+      throw ePrim;
+    }
     installWindowP(carrier, { promote: false });
     if (!window.p) throw new Error("window.p was not installed");
     p = window.p;
